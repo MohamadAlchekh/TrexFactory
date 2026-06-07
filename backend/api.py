@@ -185,6 +185,23 @@ def simulate(req: SimulateRequest):
 
 
 # ──────────────────────────────────────────────────────────────
+# GET /api/dashboard_summary
+# DigitalFactoryHub.jsx için genel özet verileri
+# ──────────────────────────────────────────────────────────────
+@app.get("/api/dashboard_summary")
+def get_dashboard_summary():
+    """
+    RCA dosyası ve baz alınan OEE değerleri üzerinden ana sayfa
+    (dashboard) göstergeleri için özet verileri döner.
+    """
+    try:
+        data = twin.get_dashboard_summary()
+        return {"status": "success", "data": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ──────────────────────────────────────────────────────────────
 # GET /health  — basit sağlık kontrolü
 # ──────────────────────────────────────────────────────────────
 @app.get("/health")

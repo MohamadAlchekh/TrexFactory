@@ -21,7 +21,7 @@ import {
   Tooltip, 
   ResponsiveContainer 
 } from 'recharts';
-import useStore from '../store/useStore';
+import { api } from '../services/api';
 
 const timelineData = [
   { month: 'Ağu 25', events: 1 },
@@ -44,31 +44,31 @@ const DEFAULT_PARETO = [
 ];
 
 const DigitalFactoryHub = () => {
-  // Use real backend data from store
-  const executiveSummary = useStore(state => state.executiveSummary);
-  const alerts = useStore(state => state.alerts);
-  const oeeData = useStore(state => state.oeeData);
+  const [dashboardData, setDashboardData] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
 
-  // Build pareto data from real alerts if available
-  const paretoFromAlerts = React.useMemo(() => {
-    if (!alerts || alerts.length === 0) return DEFAULT_PARETO;
-    const counts = {};
-    alerts.forEach(a => {
-      const key = a.message || 'UNKNOWN';
-      counts[key] = (counts[key] || 0) + 1;
-    });
-    const result = Object.entries(counts)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
-      .map(([fault, count]) => ({ fault: fault.length > 22 ? fault.slice(0, 22) + '…' : fault, count }));
-    return result.length > 0 ? result : DEFAULT_PARETO;
-  }, [alerts]);
+  React.useEffect(() => {
+    async function loadData() {
+      const res = await api.getDashboardSummary();
+      if (res.status === 'success') {
+        setDashboardData(res.data);
+      }
+      setLoading(false);
+    }
+    loadData();
+  }, []);
 
-  // Top stoppage from alerts
-  const topStoppage = paretoFromAlerts[0]?.fault || 'AIR PRESSURE FAILED';
-  const totalAlerts = executiveSummary?.activeAlerts ?? alerts?.length ?? 0;
-  const avgOee = executiveSummary?.averageOee ?? 0;
-  const totalMachines = executiveSummary?.totalMachines ?? oeeData?.length ?? 0;
+  if (loading) {
+    return <div className="p-6 h-full text-white">Yükleniyor...</div>;
+  }
+
+  const executiveSummary = dashboardData?.executiveSummary || {};
+  const paretoData = dashboardData?.pareto || DEFAULT_PARETO;
+  const timelineDataActual = dashboardData?.timeline || timelineData;
+  const totalAlerts = executiveSummary.activeAlerts || 0;
+  const avgOee = executiveSummary.averageOee || 0;
+  const totalMachines = executiveSummary.totalMachines || 0;
+  const topStoppage = executiveSummary.topStoppage || 'AIR PRESSURE FAILED';
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -189,7 +189,7 @@ const DigitalFactoryHub = () => {
           <h3 className="text-sm font-bold text-white uppercase mb-4">Aylar Bazında Alarm Sıklığı (Zaman Çizelgesi)</h3>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={timelineData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+              <LineChart data={timelineDataActual} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#30363d" vertical={false} />
                 <XAxis dataKey="month" stroke="#8b949e" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis stroke="#8b949e" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => Math.floor(val)} />
@@ -215,7 +215,7 @@ const DigitalFactoryHub = () => {
           <h3 className="text-sm font-bold text-white uppercase mb-4">Alarm Türleri (Pareto — Gerçek Backend Verisi)</h3>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={paretoFromAlerts} layout="vertical" margin={{ top: 5, right: 20, left: 30, bottom: 5 }}>
+              <BarChart data={paretoData} layout="vertical" margin={{ top: 5, right: 20, left: 30, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#30363d" horizontal={false} />
                 <XAxis type="number" stroke="#8b949e" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis dataKey="fault" type="category" stroke="#8b949e" fontSize={10} width={120} tickLine={false} axisLine={false} />

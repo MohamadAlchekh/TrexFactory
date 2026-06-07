@@ -66,4 +66,11 @@ async function health() {
   return request("GET", "/health");
 }
 
-export const api = { getAvailableDates, simulate, health };
+// ──────────────────────────────────────────────────────────────
+// GET /api/dashboard_summary
+// ──────────────────────────────────────────────────────────────
+async function getDashboardSummary() {
+  return request("GET", "/api/dashboard_summary");
+}
+
+export const api = { getAvailableDates, simulate, health, getDashboardSummary };
