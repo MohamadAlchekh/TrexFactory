@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@theme {
+  --color-dark-bg: #0d1117;
+  --color-dark-surface: #161b22;
+  --color-dark-border: #30363d;
+  --color-dark-text: #f8fafc;
+  --color-dark-muted: #8b949e;
+
+  --color-primary-50: #fbe9e7;
+  --color-primary-100: #ffccbc;
+  --color-primary-200: #ffab91;
+  --color-primary-300: #ff8a65;
+  --color-primary-400: #ff7043;
+  --color-primary-500: #ff5722;
+  --color-primary-600: #e64a19;
+  --color-primary-700: #d84315;
+  --color-primary-800: #bf360c;
+  --color-primary-900: #872808;
+
+  --color-accent-500: #00ff00;
+
+  --font-sans: "Rajdhani", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --animate-fade-in: fadeIn 0.5s ease-out;
+  --animate-slide-up: slideUp 0.5s ease-out;
+
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes slideUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 dark:bg-dark-bg dark:text-dark-text antialiased;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-white/70 dark:bg-dark-surface/70 backdrop-blur-md border border-gray-200 dark:border-dark-border shadow-none rounded-none;
+  }
+  
+  .glass-card {
+    @apply bg-white/60 dark:bg-dark-surface/60 backdrop-blur-sm border border-gray-100 dark:border-dark-border shadow-none rounded-sm hover:border-primary-500 transition-colors duration-300;
+  }
+
+  .nav-item {
+    @apply flex items-center space-x-3 px-4 py-3 rounded-none border-l-2 border-transparent transition-colors duration-200 text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400;
+  }
+
+  .nav-item-active {
+    @apply flex items-center space-x-3 px-4 py-3 rounded-none border-l-2 border-primary-500 transition-colors duration-200 bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400 font-bold tracking-wider;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-dark-border rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-slate-600;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+  
+  html, body {
+    width: 210mm;
+    height: 297mm;
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 11pt;
+  }
+
+  /* Force print background colors if needed */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    box-shadow: none !important;
+  }
+}
