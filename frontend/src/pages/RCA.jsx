@@ -52,8 +52,17 @@ const RCA = () => {
       return oeeData.map((m, i) => ({ id: `m${i}`, name: m.machineId, uid: m.unit_uid }));
     }
     return [
-      { id: 'm1', name: 'Makine 1', uid: '3a1d1435-0bb7-86db-9c63-ca5b1272cbf3' },
-      { id: 'm2', name: 'Makine 2', uid: '4b2e2546-1cc8-97ec-0d74-da6c2383dc04' },
+      { id: 'm1',  name: 'Makine 1',     uid: '3a1d1435-0bb7-86db-9c63-ca5b1272cbf3' },
+      { id: 'm2',  name: 'Makine 2',     uid: '3a1d1435-0afb-41a7-2d12-5eb77c185258' },
+      { id: 'm3',  name: 'Makine 3',     uid: '3a1d8054-94bd-747d-0e30-05d4ca302199' },
+      { id: 'm4',  name: 'Makine 4',     uid: '3a1debd9-c20c-53ca-b094-d32a1e422887' },
+      { id: 'm5',  name: 'Makine 5',     uid: '3a1debd9-412d-74b3-b3f9-832a50f89a94' },
+      { id: 'm6',  name: 'Makine 6',     uid: '3a1debed-c5e4-2f15-1576-2551d5f4bcbf' },
+      { id: 'm7',  name: 'Makine 7',     uid: '3a1d144a-0d22-ba9f-884c-18b40551ebd0' },
+      { id: 'm8',  name: 'Makine 8',     uid: '3a1d144a-0eb8-8b07-8466-41f170d828de' },
+      { id: 'm9',  name: 'Makine 9',     uid: '3a1d1435-0a17-9903-5c19-3d0f521b78ee' },
+      { id: 'm10', name: 'Makine 10',    uid: '3a1debf8-841b-af4f-b67c-4aab557e9668' },
+      { id: 't400',name: 'TurboCut 400', uid: '3a1bd958-3763-b086-5e4a-1a4d1755b0e9' }
     ];
   }, [oeeData]);
 
@@ -371,21 +380,30 @@ const RCA = () => {
           </div>
           <div className="space-y-1">
             <label className="text-[10px] uppercase font-bold text-white tracking-wider flex items-center gap-1"><Calendar className="w-3 h-3" /> Başlangıç Tarihi</label>
-            <input
-              type="date"
+            <select
               value={startDate}
-              onChange={e => setStartDate(e.target.value)}
+              onChange={e => {
+                setStartDate(e.target.value);
+                setEndDate(e.target.value);
+              }}
               className="w-full bg-[#1a2235] border border-gray-300 dark:border-gray-700 text-sm p-2 outline-none text-white font-medium rounded-none focus:ring-1 focus:ring-blue-500"
-            />
+            >
+              <option value="2026-01-12">2026-01-12 (Basınç Hatası)</option>
+              <option value="2026-01-21">2026-01-21 (Kritik Arıza)</option>
+              <option value="2026-02-25">2026-02-25 (Normal Dönem)</option>
+            </select>
           </div>
           <div className="space-y-1">
             <label className="text-[10px] uppercase font-bold text-white tracking-wider flex items-center gap-1"><Calendar className="w-3 h-3" /> Bitiş Tarihi</label>
-            <input
-              type="date"
+            <select
               value={endDate}
               onChange={e => setEndDate(e.target.value)}
               className="w-full bg-[#1a2235] border border-gray-300 dark:border-gray-700 text-sm p-2 outline-none text-white font-medium rounded-none focus:ring-1 focus:ring-blue-500"
-            />
+            >
+              <option value="2026-01-12">2026-01-12</option>
+              <option value="2026-01-21">2026-01-21</option>
+              <option value="2026-02-25">2026-02-25</option>
+            </select>
           </div>
           <div className="space-y-1">
             <label className="text-[10px] uppercase font-bold text-white tracking-wider flex items-center gap-1"><Calendar className="w-3 h-3" /> Olay Tarihi</label>
@@ -397,6 +415,7 @@ const RCA = () => {
             <label className="text-[10px] uppercase font-bold text-white tracking-wider flex items-center gap-1"><AlertOctagon className="w-3 h-3" /> Alarm/Olay</label>
             <select className="w-full bg-[#1a2235] border border-red-300 dark:border-red-900/50 text-sm p-2 outline-none text-red-600 dark:text-red-400 font-bold rounded-none">
               <option>MOTOR OVERLOAD!</option>
+              <option>AIR PRESSURE FAILED</option>
             </select>
           </div>
         </motion.div>
