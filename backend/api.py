@@ -15,6 +15,7 @@ import sys, os
 # ──────────────────────────────────────────────────────────────
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from what_if_algorithm import IndustrialDigitalTwin
+from rca_analyzer import RootCauseAnalyzer
 
 app = FastAPI(
     title="Industrial Digital Twin API",
@@ -188,7 +189,23 @@ def simulate(req: SimulateRequest):
 # GET /api/dashboard_summary
 # DigitalFactoryHub.jsx için genel özet verileri
 # ──────────────────────────────────────────────────────────────
-@app.get("/api/dashboard_summary")
+@app.get("/api/stoppages/{unit_uid}/{date}")
+async def get_stoppages(unit_uid: str, date: str):
+    try:
+        twin = IndustrialDigitalTwin()  # Assuming you have a way to initialize this
+        stoppages = twin.fetch_stoppages(unit_uid, date)
+        return { 'stoppages': stoppages }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/rca")
+async def run_rca(unit_uid: str, stoppage_id: str):
+    try:
+        analyzer = RootCauseAnalyzer(twin.con)
+        rca_result = analyzer.run_rca(unit_uid, stoppage_id)
+        return rca_result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 def get_dashboard_summary():
     """
     RCA dosyası ve baz alınan OEE değerleri üzerinden ana sayfa

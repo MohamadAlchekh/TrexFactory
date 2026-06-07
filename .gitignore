@@ -2,7 +2,7 @@
 docs/
 presentations/
 screenshots/
-
+__pycache__/
 # Dataset folders (large CSV files - not tracked in git)
 data/
 archive_unused_tables/
